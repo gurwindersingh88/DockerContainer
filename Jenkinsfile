@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'myimage'
         CONTAINER_NAME = 'my-container321fgfggg'
-        PORT_MAPPING = '8084:5901'
+        PORT_MAPPING = '8085:5901'
     }
 
     stages {
