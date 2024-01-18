@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'my-docker-imagezxcvb'
-        CONTAINER_NAME = 'my-containerzxcvb'
-        PORT_MAPPING = '8084:5901'
+        IMAGE_NAME = 'my-docker-imagezxcvbn'
+        CONTAINER_NAME = 'my-containerzxcvbn'
+        PORT_MAPPING = '8085:5901'
     }
 
     stages {
