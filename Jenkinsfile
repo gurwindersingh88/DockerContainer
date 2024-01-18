@@ -2,10 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKERFILE_PATH = './Dockerfile'  // Specify the path to your Dockerfile
         IMAGE_NAME = 'myimage'
-        CONTAINER_NAME = 'mycontainer'
-        PORT_MAPPING = '8080:80'  // Adjust the port mapping as needed
+        CONTAINER_NAME = 'my-container'
+        PORT_MAPPING = '8083:5901'
     }
 
     stages {
@@ -13,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    docker.build(env.IMAGE_NAME, "-f ${env.DOCKERFILE_PATH} .")
+                    docker.build(env.IMAGE_NAME, '.')
                 }
             }
         }
@@ -22,7 +21,23 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
-                    docker.image(env.IMAGE_NAME).withRun("-p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME}")
+                    def container = docker.image(env.IMAGE_NAME).run("-p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} -d")
+                    // Retrieve the container ID for further use if needed
+                    def containerId = container.id
+                    echo "Docker container ID: ${containerId}"
+                }
+            }
+        }
+
+        stage('Post-Deployment') {
+            steps {
+                script {
+                    // Perform post-deployment tasks if needed
+                    echo 'Post-deployment tasks...'
+                    // Example: Wait for the container to start (adjust as needed)
+                    sh "sleep 30"
+                    // Example: Print container logs
+                    sh "docker logs ${env.CONTAINER_NAME}"
                 }
             }
         }
@@ -31,8 +46,8 @@ pipeline {
             steps {
                 script {
                     // Clean up: Stop and remove the Docker container
-                    docker.container(env.CONTAINER_NAME).stop()
-                    docker.container(env.CONTAINER_NAME).remove(force: true)
+                    sh "docker stop ${env.CONTAINER_NAME} || true"
+                    sh "docker rm ${env.CONTAINER_NAME} || true"
                 }
             }
         }
