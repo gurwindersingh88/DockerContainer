@@ -2,27 +2,17 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'your-docker-registry/your-docker-image:latest'
-        CONTAINER_NAME = 'your-container'
+        IMAGE_NAME = 'my-docker-imagezx'
+        CONTAINER_NAME = 'my-containerzx'
         PORT_MAPPING = '8080:80'
-        DOCKER_PATH = 'C:/Program Files/Docker/Docker/resources/bin/docker.exe' // Replace with the actual path to your Docker executable
     }
 
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build Docker image using the full path to Docker executable
-                    sh "${DOCKER_PATH} build -t ${DOCKER_IMAGE} ."
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    // Push Docker image to registry
-                    sh "${DOCKER_PATH} push ${DOCKER_IMAGE}"
+                    // Build Docker image
+                    sh "docker build -t ${env.IMAGE_NAME} ."
                 }
             }
         }
@@ -30,18 +20,20 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Run Docker container
-                    sh "${DOCKER_PATH} run -d -p ${PORT_MAPPING} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                    if (isUnix()) {
+                        // Unix-like system
+                        sh "nohup docker run -d -p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} ${env.IMAGE_NAME} &"
+                    } else {
+                        // Windows system
+                        sh "start /B docker run -d -p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} ${env.IMAGE_NAME}"
+                    }
                 }
             }
         }
 
         stage('Post-Deployment') {
             steps {
-                script {
-                    // Add post-deployment steps if needed
-                    echo 'Post-deployment steps go here'
-                }
+                // Add post-deployment steps if needed
             }
         }
 
@@ -49,8 +41,8 @@ pipeline {
             steps {
                 script {
                     // Clean up: Stop and remove the Docker container
-                    sh "${DOCKER_PATH} stop ${CONTAINER_NAME} || true"
-                    sh "${DOCKER_PATH} rm ${CONTAINER_NAME} || true"
+                    sh "docker stop ${env.CONTAINER_NAME} || true"
+                    sh "docker rm ${env.CONTAINER_NAME} || true"
                 }
             }
         }
