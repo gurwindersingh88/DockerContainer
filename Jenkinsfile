@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'your-docker-registry/your-docker-image:latest'
         CONTAINER_NAME = 'your-container'
-        PORT_MAPPING = '8080:80'
+        PORT_MAPPING = '8083:5901'
     }
 
     stages {
