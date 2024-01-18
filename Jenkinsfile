@@ -2,36 +2,26 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'my-docker-imageee'
-        CONTAINER_NAME = 'my-containerrr'
+        DOCKER_IMAGE = 'your-docker-registry/your-docker-imageeee'
+        CONTAINER_NAME = 'your-containerrrrrr'
         PORT_MAPPING = '8083:5901'
     }
 
     stages {
-        stage('Install Docker') {
-            steps {
-                // Install Docker using the Docker tool
-                tool name: 'Docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
-            }
-        }
-
-        stage('Run Inline Script') {
-            steps {
-                script {
-                    // Print Docker version
-                    sh 'docker --version'
-
-                    // Echo a message
-                    echo 'Hello, this is a simple inline script!'
-                }
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
                     // Build Docker image
-                    docker.build(env.IMAGE_NAME, '.')
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push Docker image to registry
+                    sh "docker push ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -40,26 +30,23 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
-                    def container = docker.image(env.IMAGE_NAME).run("-p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} -d")
-                    def containerId = container.id
-                    echo "Docker container ID: ${containerId}"
+                    sh "docker run -d -p ${PORT_MAPPING} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                 }
             }
         }
 
         stage('Post-Deployment') {
             steps {
-                // Perform post-deployment tasks if needed
-                echo 'Post-deployment tasks...'
+                // Add post-deployment steps if needed
             }
         }
 
         stage('Cleanup') {
             steps {
-                // Clean up: Stop and remove the Docker container
                 script {
-                    sh "docker stop ${env.CONTAINER_NAME} || true"
-                    sh "docker rm ${env.CONTAINER_NAME} || true"
+                    // Clean up: Stop and remove the Docker container
+                    sh "docker stop ${CONTAINER_NAME} || true"
+                    sh "docker rm ${CONTAINER_NAME} || true"
                 }
             }
         }
