@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'your-docker-registry/your-docker-image:latest'
         CONTAINER_NAME = 'your-container'
         PORT_MAPPING = '8080:80'
-        DOCKER_PATH = 'C:\Program Files\Docker\Docker\resources\bin\docker.exe' // Replace with the actual path to your Docker executable
+        DOCKER_PATH = 'C:/Program Files/Docker/Docker/resources/bin/docker.exe' // Replace with the actual path to your Docker executable
     }
 
     stages {
