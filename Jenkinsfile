@@ -4,15 +4,16 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'your-docker-registry/your-docker-image:latest'
         CONTAINER_NAME = 'your-container'
-        PORT_MAPPING = '8083:5901'
+        PORT_MAPPING = '8080:80'
+        DOCKER_PATH = 'C:\Program Files\Docker\Docker\resources\bin\docker.exe' // Replace with the actual path to your Docker executable
     }
 
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build Docker image
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    // Build Docker image using the full path to Docker executable
+                    sh "${DOCKER_PATH} build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
@@ -21,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Push Docker image to registry
-                    sh "docker push ${DOCKER_IMAGE}"
+                    sh "${DOCKER_PATH} push ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -30,7 +31,7 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
-                    sh "docker run -d -p ${PORT_MAPPING} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                    sh "${DOCKER_PATH} run -d -p ${PORT_MAPPING} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                 }
             }
         }
@@ -48,8 +49,8 @@ pipeline {
             steps {
                 script {
                     // Clean up: Stop and remove the Docker container
-                    sh "docker stop ${CONTAINER_NAME} || true"
-                    sh "docker rm ${CONTAINER_NAME} || true"
+                    sh "${DOCKER_PATH} stop ${CONTAINER_NAME} || true"
+                    sh "${DOCKER_PATH} rm ${CONTAINER_NAME} || true"
                 }
             }
         }
