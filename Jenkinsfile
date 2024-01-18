@@ -2,16 +2,20 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'my-docker-image123'
-        CONTAINER_NAME = 'my-container123'
-        PORT_MAPPING = '8084:5901'
+        IMAGE_NAME = 'my-docker-image321'
+        CONTAINER_NAME = 'my-container321'
+        PORT_MAPPING = '8085:5901'
     }
 
     stages {
         stage('Install Docker') {
             steps {
-                // Install Docker using the Docker tool
-                tool name: 'Docker', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+                // Install Docker
+                sh 'curl -fsSL https://get.docker.com -o get-docker.sh'
+                sh 'sh get-docker.sh'
+                sh 'sudo usermod -aG docker $USER'
+                sh 'sudo systemctl enable docker'
+                sh 'sudo systemctl start docker'
             }
         }
 
@@ -31,7 +35,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    docker.build(env.IMAGE_NAME, '.')
+                    sh "docker build -t ${env.IMAGE_NAME} ."
                 }
             }
         }
@@ -40,9 +44,7 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
-                    def container = docker.image(env.IMAGE_NAME).run("-p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} -d")
-                    def containerId = container.id
-                    echo "Docker container ID: ${containerId}"
+                    sh "docker run -d -p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} ${env.IMAGE_NAME}"
                 }
             }
         }
