@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'my-docker-imagezxcv'
-        CONTAINER_NAME = 'my-containerzxcv'
+        IMAGE_NAME = 'my-docker-imagezxcvb'
+        CONTAINER_NAME = 'my-containerzxcvb'
         PORT_MAPPING = '8083:5901'
     }
 
@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    sh "docker build -t ${env.IMAGE_NAME} ."
+                    bat "docker build -t ${env.IMAGE_NAME} ."
                 }
             }
         }
@@ -27,13 +27,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Docker container...'
-
-                    // Use different commands based on the operating system
-                    if (isUnix()) {
-                        sh "docker run -d -p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} ${env.IMAGE_NAME}"
-                    } else {
-                        bat "docker run -d -p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} ${env.IMAGE_NAME}"
-                    }
+                    bat "docker run -d -p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} ${env.IMAGE_NAME}"
                 }
             }
         }
@@ -48,8 +42,8 @@ pipeline {
             steps {
                 script {
                     echo 'Cleaning up...'
-                    sh "docker stop ${env.CONTAINER_NAME} || true"
-                    sh "docker rm ${env.CONTAINER_NAME} || true"
+                    bat "docker stop ${env.CONTAINER_NAME} || true"
+                    bat "docker rm ${env.CONTAINER_NAME} || true"
                 }
             }
         }
