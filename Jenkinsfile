@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'your-docker-registry/your-docker-image123'
-        CONTAINER_NAME = 'your-container123'
+        DOCKER_IMAGE = 'your-docker-registry/your-docker-image:latest'
+        CONTAINER_NAME = 'your-container'
         PORT_MAPPING = '8083:5901'
     }
 
@@ -13,6 +13,15 @@ pipeline {
                 script {
                     // Build Docker image
                     sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push Docker image to registry
+                    sh "docker push ${DOCKER_IMAGE}"
                 }
             }
         }
