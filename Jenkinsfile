@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'myimage'
-        CONTAINER_NAME = 'my-container321fgfggg'
-        PORT_MAPPING = '8085:5901'
+        IMAGE_NAME = 'my-docker-image'
+        CONTAINER_NAME = 'my-container123456'
+        PORT_MAPPING = '8086:5901'
     }
 
     stages {
@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    docker.build(env.IMAGE_NAME, '.')
+                    sh "docker build -t ${env.IMAGE_NAME} ."
                 }
             }
         }
@@ -21,23 +21,7 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
-                    def container = docker.image(env.IMAGE_NAME).run("-p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} -d")
-                    // Retrieve the container ID for further use if needed
-                    def containerId = container.id
-                    echo "Docker container ID: ${containerId}"
-                }
-            }
-        }
-
-        stage('Post-Deployment') {
-            steps {
-                script {
-                    // Perform post-deployment tasks if needed
-                    echo 'Post-deployment tasks...'
-                    // Example: Wait for the container to start (adjust as needed)
-                    sh "sleep 30"
-                    // Example: Print container logs
-                    sh "docker logs ${env.CONTAINER_NAME}"
+                    sh "docker run -d -p ${env.PORT_MAPPING} --name ${env.CONTAINER_NAME} ${env.IMAGE_NAME}"
                 }
             }
         }
