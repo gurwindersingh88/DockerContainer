@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'my-docker-imagezxcvb'
         CONTAINER_NAME = 'my-containerzxcvb'
-        PORT_MAPPING = '8083:5901'
+        PORT_MAPPING = '8084:5901'
     }
 
     stages {
