@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'myimage'
-        CONTAINER_NAME = 'my-container'
+        CONTAINER_NAME = 'my-container321'
         PORT_MAPPING = '8080:5901'
     }
 
