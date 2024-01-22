@@ -8,4 +8,4 @@ WORKDIR /katalon/katalon/source
 COPY . /katalon/katalon/source
 
 # Specify the default command to run Katalon Studio in console mode
-CMD ["katalonc.sh", "-noSplash", "-runMode=console", "-projectPath=/katalon/katalon/source/shopping-cart-tests.prj", "-retry=0", "-testSuiteCollectionPath=Test Suites/Shopping-cart-tests - Run All Test Suites", "-apiKey=ab719a43-915d-4b93-afbb-97f480736f26"]
+CMD ["katalonc.sh", "-noSplash", "-runMode=console", "-projectPath=/katalon/katalon/source/shopping-cart-tests.prj", "-retry=0", "-testSuiteCollectionPath=Test Suites/Order and check out with Global Variable", "-apiKey=ab719a43-915d-4b93-afbb-97f480736f26"]
